@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Growth & Development — Full Practice</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --card:#171a21;
+    --border:#2a2f3a;
+    --text:#eef1f6;
+    --muted:#9aa3b2;
+    --accent:#4f8cff;
+    --correct:#2fbf71;
+    --correct-bg:#123524;
+    --wrong:#ef5350;
+    --wrong-bg:#3a1a1a;
+    --tag:#3a2f6b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:20px 14px 60px;
+  }
+  h1{
+    font-size:20px;
+    text-align:center;
+    margin:0 0 4px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:22px;
+  }
+  .quiz-container{
+    max-width:640px;
+    margin:0 auto;
+  }
+  .section-heading{
+    max-width:640px;
+    margin:28px auto 12px;
+    font-size:16px;
+    font-weight:700;
+    color:var(--accent);
+    border-bottom:1px solid var(--border);
+    padding-bottom:6px;
+  }
+  .qcard{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 16px;
+    margin-bottom:18px;
+  }
+  .qmeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .qnum{
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:0.03em;
+  }
+  .qtag{
+    font-size:11px;
+    background:var(--tag);
+    color:#c9c3ff;
+    padding:3px 9px;
+    border-radius:20px;
+  }
+  .qtext{
+    font-size:15.5px;
+    line-height:1.5;
+    margin-bottom:14px;
+    white-space:pre-line;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .option{
+    text-align:left;
+    background:#1e222c;
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:11px 13px;
+    border-radius:10px;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    line-height:1.4;
+  }
+  .option:hover:not(.locked){
+    border-color:var(--accent);
+  }
+  .option.correct-pick{
+    background:var(--correct-bg);
+    border-color:var(--correct);
+    color:#c9f5da;
+  }
+  .option.wrong-pick{
+    background:var(--wrong-bg);
+    border-color:var(--wrong);
+    color:#ffd6d4;
+  }
+  .option.reveal-correct{
+    border-color:var(--correct);
+    box-shadow:inset 0 0 0 1px var(--correct);
+  }
+  .option.dim{
+    opacity:0.55;
+  }
+  .feedback{
+    margin-top:12px;
+    padding:12px 13px;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.55;
+    display:none;
+  }
+  .feedback.show{
+    display:block;
+    animation:fadeIn .25s ease;
+  }
+  .feedback.right{
+    background:var(--correct-bg);
+    border:1px solid var(--correct);
+    color:#d7f7e3;
+  }
+  .feedback.wrong{
+    background:var(--wrong-bg);
+    border:1px solid var(--wrong);
+    color:#ffe1df;
+  }
+  .feedback .status{
+    font-weight:700;
+    margin-bottom:4px;
+    display:block;
+  }
+  .feedback .explain{
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .feedback .explain b{
+    color:var(--text);
+  }
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(-4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .score-bar{
+    max-width:640px;
+    margin:0 auto 10px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+    position:sticky;
+    top:10px;
+    z-index:5;
+  }
+  .score-bar span{color:var(--muted);}
+  .score-bar b{color:var(--accent); font-size:16px;}
+  .reset-btn{
+    background:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{
+    color:var(--text);
+    border-color:var(--accent);
+  }
+  table.mini{
+    border-collapse:collapse;
+    width:100%;
+    margin:8px 0;
+    font-size:13.5px;
+  }
+  table.mini td, table.mini th{
+    border:1px solid var(--border);
+    padding:6px 8px;
+    text-align:center;
+  }
+  table.mini th{
+    background:#1e222c;
+    color:var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<h1>🌱 Plant Growth & Development</h1>
+<div class="subtitle">Concept PYQs + DPP 1 & DPP 2 — Practice Quiz (Vipin Sharma Sir, Yakeen NEET 2.0)</div>
+
+<div class="score-bar">
+  <span>Score: <b id="scoreDisplay">0</b> / <span id="totalDisplay">0</span></span>
+  <button class="reset-btn" onclick="resetQuiz()">Reset</button>
+</div>
+
+<div class="quiz-container" id="quizContainer"></div>
+
+<script>
+const questions = [
+  // ================= Concept PYQs (from lecture slides) =================
+  {
+    dpp: "Concept PYQs",
+    tag: "Development",
+    text: "चित्र में विभज्योतकी कोशिका (Meristematic cell) से मैच्योर कोशिका बनने तक के 1, 2, 3, 4 चरणों को उनके सही sequence में पहचानो।",
+    options: [
+      "1 = Elongation, 2 = Differentiation, 3 = Cell maturation, 4 = Cell division",
+      "1 = Cell division, 2 = Differentiation, 3 = Elongation, 4 = Maturation",
+      "1 = Differentiation, 2 = Cell division, 3 = Maturation, 4 = Elongation",
+      "1 = Maturation, 2 = Elongation, 3 = Cell division, 4 = Differentiation"
+    ],
+    correct: 1,
+    explain: "Sahi sequence hai: <b>Cell division → Differentiation → Elongation → Maturation</b>."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "Plasticity",
+    text: "निम्नलिखित में से कौन सा पौधा Plasticity नहीं दिखाता है? (NEET 2022)",
+    options: ["Maize", "Cotton", "Coriander", "Buttercup"],
+    correct: 0,
+    explain: "<b>Maize</b> heterophylly ya kisi tarah ki plasticity nahi dikhata — iski leaves har stage/environment me ek jaisi rehti hain."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "Plasticity",
+    text: "एक चित्र में Juvenile, Adult, Terrestrial aur Aquatic leaves दिखाई गई हैं। ये चित्र किस phenomenon को represent karta hai?",
+    options: ["Heterophylly", "Growth", "Plasticity", "एक से ज़्यादा सही हैं"],
+    correct: 3,
+    explain: "Heterophylly khud Plasticity ka hi ek example hai — isliye jab dono options diye jaate hain, tab <b>'more than one correct'</b> hi sahi answer hota hai."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "PGR Classification",
+    text: "Kinetin रासायनिक रूप से क्या है?",
+    options: ["Indole-3-acetic acid", "Terpene", "N⁶-furfuryl amino purine", "Carotenoid"],
+    correct: 2,
+    explain: "Kinetin ek <b>Adenine derivative</b> hai, aur iska chemical naam hai <b>N⁶-furfuryl amino purine</b>."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "PGR Classification",
+    text: "निम्नलिखित में से कौन सा गलत match है?",
+    options: [
+      "PGRs — Small and simple molecules",
+      "Auxin — Oat seedlings",
+      "Cytokinins — Plant growth promoters",
+      "GA₃ — Adenine derivatives"
+    ],
+    correct: 3,
+    explain: "GA₃ (Gibberellic acid) asal me <b>Terpene</b> hai, Adenine derivative nahi."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "PGR Table",
+    text: "IAA (Indole Acetic Acid) का primary precursor है:",
+    options: ["Phenylalanine", "Tyrosine", "Tryptophan", "Valine"],
+    correct: 2,
+    explain: "IAA ka precursor hai <b>Tryptophan</b>, jo ek amino acid hai."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "Discovery History",
+    text: "Auxin को coleoptile के tips से किसने और कहाँ से isolate किया था?",
+    options: [
+      "Canary grass से, Charles और Francis Darwin द्वारा",
+      "Canary grass से, F.W. Went द्वारा",
+      "Oat seedlings से, Charles और Francis Darwin द्वारा",
+      "Oat seedlings से, F.W. Went द्वारा"
+    ],
+    correct: 3,
+    explain: "Darwin father-son ne sirf <b>canary grass</b> me phototropism observe kiya tha. Actual Auxin isolation baad me <b>F.W. Went</b> ne <b>oat seedlings</b> ke coleoptile tips se kiya."
+  },
+  {
+    dpp: "Concept PYQs",
+    tag: "Discovery History",
+    text: "1960 के दशक में तीन independent scientists ने तीन अलग-अलग inhibitors रिपोर्ट किए (Inhibitor-B, Abscission II, Dormin), जो बाद में chemically identical निकले। इसे नाम दिया गया:",
+    options: ["Indole acetic acid", "Indole butyric acid", "Naphthalene acetic acid", "Abscisic acid"],
+    correct: 3,
+    explain: "Teeno substances chemically identical nikle, aur unhe common naam diya gaya <b>Abscisic Acid (ABA)</b>."
+  },
+
+  // ================= DPP 1 =================
+  {
+    dpp: "DPP 1",
+    tag: "Meristem",
+    text: "All cells of the plant are descendants of:",
+    options: ["Zygote", "Apical meristem", "Lateral meristem", "Both (B) and (C)"],
+    correct: 0,
+    explain: "Saare plant cells ultimately <b>zygote</b> se hi develop hote hain — zygote hi wo pehli cell hai jisse pura plant body banta hai (cell division ke through)."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Secondary Growth",
+    text: "Secondary growth is:",
+    options: ["Increase in width", "Due to vascular cambium", "Observed in dicots", "All of the above"],
+    correct: 3,
+    explain: "Secondary growth me stem/root ki <b>width (girth) badhti hai</b>, ye <b>vascular cambium</b> ki activity se hota hai, aur mainly <b>dicots</b> me dekha jaata hai. Isliye teeno options sahi hain."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Secondary Growth",
+    text: "Secondary growth generally occurs in:",
+    options: ["Monocots", "Dicots", "Gymnosperms", "Both (B) and (C)"],
+    correct: 3,
+    explain: "Secondary growth <b>Dicots aur Gymnosperms</b> dono me hota hai (kyunki dono me vascular cambium present hota hai). Monocots me generally absent hota hai."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Growth Basics",
+    text: "Plant growth is:",
+    options: ["Due to metabolism", "Reversible", "Does not require energy", "At same rate throughout life"],
+    correct: 0,
+    explain: "Growth <b>metabolism (anabolic + catabolic processes)</b> ki wajah se hoti hai, jisme energy use hoti hai. Growth <b>irreversible</b> hoti hai aur life ke different phases me <b>different rate</b> se hoti hai — isliye B, C, D galat hain."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Growth Basics",
+    text: "Which of the following statements is correct about growth?",
+    options: [
+      "Growth is regarded as one of most fundamental and conspicuous characteristics of living beings.",
+      "Growth can be defined as an irreversible permanent increase in size of an organ or its parts or even of an individual cell.",
+      "Generally, growth is accompanied by metabolic processes (both anabolic and catabolic), that occur at the expense of energy.",
+      "All of these"
+    ],
+    correct: 3,
+    explain: "Ye teeno statements NCERT ki definition of growth ke exact points hain — sabhi sahi hain, isliye <b>'All of these'</b> answer hai."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Growth vs Development",
+    text: "Which phenomenon is depicted in the figure below?\n(Chota leaf → Bada leaf, arrow ke sath)",
+    options: ["Development", "Plasticity", "Growth", "Cannot be determined"],
+    correct: 2,
+    explain: "Figure me sirf leaf ka <b>size badhna</b> dikhaya gaya hai (shape change nahi, sirf size increase) — ye simple <b>Growth</b> hai, Development ya Plasticity nahi (unme differentiation ya shape change involve hota hai)."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Assertion-Reason",
+    text: "Assertion (A): Growth, at cellular level, is measured by parameters like fresh weight, dry weight, length, area, volume and cell number.\nReason (R): Growth, at cellular level, is principally a consequence of increase in protoplasm, and increase in protoplasm is difficult to measure directly.",
+    options: [
+      "Both A and R are True, R is correct explanation of A",
+      "Both A and R are True, R is NOT correct explanation of A",
+      "A is True but R is False",
+      "A is False but R is True"
+    ],
+    correct: 0,
+    explain: "Dono statements NCERT se directly hain aur sahi hain. R sahi tarah explain karta hai ki hum indirect parameters (weight, length, area) kyu use karte hain — kyunki protoplasm directly measure karna mushkil hai. Isliye <b>R, A ki correct explanation hai</b>."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "NCERT Facts",
+    text: "Read the given statements and select the correct option:\n(i) One maize root cell can give rise to more than 17,500 new cells per hour.\n(ii) A cell in watermelon can increase in size upto 3,50,000 times.\n(iii) Growth of pollen tube is measured in terms of length.\n(iv) Growth of the leaf is measured in terms of surface area.",
+    options: [
+      "Statements (i) and (ii) are correct only",
+      "Statements (iii) and (iv) are correct only",
+      "Statements (i) and (iii) are correct only",
+      "Statements (i), (ii), (iii) and (iv) are correct"
+    ],
+    correct: 3,
+    explain: "Ye sab NCERT ke exact facts hain: maize root cell 17,500 cells/hour bana sakta hai, watermelon cell 3,50,000 guna badh sakta hai, pollen tube growth length me measure hoti hai, aur leaf growth surface area me. <b>Sab sahi hain.</b>"
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Match the Following",
+    text: "Match the following:\nList-I: A) Growth measured in cell size  B) Growth measured in cell number  C) Growth measured in cell length  D) Growth measured in surface area of cell\nList-II: P) Dorsiventral leaf  Q) Watermelon  R) Root apical meristem of Maize  S) Pollen tube",
+    options: ["A-P; B-R; C-Q; D-S", "A-P; B-S; C-Q; D-R", "A-P; B-Q; C-R; D-S", "A-Q; B-R; C-S; D-P"],
+    correct: 3,
+    explain: "Sahi matching: <b>A-Q</b> (cell size → Watermelon), <b>B-R</b> (cell number → Maize root meristem), <b>C-S</b> (cell length → Pollen tube), <b>D-P</b> (surface area → Dorsiventral leaf)."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "NCERT Facts",
+    text: "Maize root apical meristem cell can produce _________ cells per hour.",
+    options: ["35000", "17500", "30000", "12000"],
+    correct: 1,
+    explain: "NCERT ka exact fact: maize root apical meristem cell <b>17,500</b> se zyada new cells per hour produce kar sakta hai."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Growth Measurement Technique",
+    text: "The following figure shows a root with markings (A, B, C, D, E, F, G) at different distances from the tip. What does this figure represent?",
+    options: [
+      "Growth of the pollen tube in terms of surface area",
+      "Detection of zone of elongation by the parallel line technique",
+      "Detection of zone of maturation by parallel line technique",
+      "Detection of zone of meristematic activity by the parallel line technique"
+    ],
+    correct: 1,
+    explain: "Root tip pe equal distance ki lines banake unke beech ka gap dekha jaata hai — jaha gap sabse zyada badhta hai, wo <b>zone of elongation</b> hoti hai. Ye technique <b>parallel line technique</b> kehlati hai."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Match the Following",
+    text: "Match the following:\nList-I: A) Shoot apical meristem  B) Lateral meristems  C) Meristematic phase  D) Elongation phase\nList-II: P) Cells rich in protoplasm, large nuclei  Q) Elongation of the plants  R) Increased vacuolation & new cell wall deposition  S) Increase in the girth",
+    options: ["A-P; B-R; C-Q; D-S", "A-Q; B-S; C-P; D-R", "A-S; B-P; C-Q; D-R", "A-S; B-Q; C-P; D-R"],
+    correct: 1,
+    explain: "Sahi matching: <b>A-Q</b> (Shoot apical meristem → plant ki elongation), <b>B-S</b> (Lateral meristems → girth badhana), <b>C-P</b> (Meristematic phase → protoplasm-rich cells), <b>D-R</b> (Elongation phase → vacuolation aur new cell wall)."
+  },
+  {
+    dpp: "DPP 1",
+    tag: "Development Sequence",
+    text: "Identify 1,2,3, and 4 w.r.t sequence of developmental process in a plant cell.\n(Meristematic cell → 1 → 2 → Senescence → Death, aur 3, 4 se Mature cell tak)",
+    options: [
+      "1=elongation, 2=differentiation, 3=cell maturation, 4=cell division",
+      "1=cell division, 2=differentiation, 3=elongation, 4=maturation",
+      "1=differentiation, 2=cell division, 3=maturation, 4=elongation",
+      "1=maturation, 2=elongation, 3=cell division, 4=differentiation"
+    ],
+    correct: 1,
+    explain: "Sahi sequence: <b>Cell division → Differentiation → Elongation → Maturation</b>. Ye same diagram hai jo NCERT me diya gaya hai — pehle divide, phir differentiate, phir elongate, phir mature."
+  },
+
+  // ================= DPP 2 =================
+  {
+    dpp: "DPP 2",
+    tag: "Development Sequence",
+    text: "Identify 1,2,3, and 4 w.r.t sequence of developmental process in a plant cell.\n(Same diagram jaisa DPP 1 me tha)",
+    options: [
+      "1=elongation, 2=differentiation, 3=cell maturation, 4=cell division",
+      "1=cell division, 2=differentiation, 3=elongation, 4=maturation",
+      "1=differentiation, 2=cell division, 3=maturation, 4=elongation",
+      "1=maturation, 2=elongation, 3=cell division, 4=differentiation"
+    ],
+    correct: 1,
+    explain: "Same sahi sequence: <b>Cell division → Differentiation → Elongation → Maturation</b>."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Growth Curves",
+    text: "Which one is the correct graph for arithmetic growth?",
+    options: [
+      "Straight line (linear) graph — Growth vs Time",
+      "S-shaped (sigmoid) curve",
+      "Flat horizontal line",
+      "Decreasing curve"
+    ],
+    correct: 0,
+    explain: "Arithmetic growth me size ek <b>constant rate</b> se badhta hai, isliye graph hamesha ek <b>straight line (linear)</b> hota hai. Sigmoid curve geometric/exponential growth ke liye hota hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Embryo Development",
+    text: "The given figure shows development of an embryo that undergoes two phases A and B (A = upar wala division jo cells divide karte hain, B = neeche wala jaha cells divide karna band kar dete hain). Select the correct option regarding it.",
+    options: [
+      "A = Geometric phase, B = Arithmetic phase",
+      "A = Arithmetic phase, B = Geometric phase",
+      "A = Arithmetic phase, B = Exponential phase",
+      "A = Exponential phase, B = Stationary phase"
+    ],
+    correct: 0,
+    explain: "Phase A me cells continuously divide ho rahe hain (jaisa geometric/exponential growth me hota hai) — isliye A = <b>Geometric phase</b>. Phase B me cells apni division capacity lose kar chuke hain aur sirf simple increase hota hai — isliye B = <b>Arithmetic phase</b>."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Exponential Growth Formula",
+    text: "The exponential growth can be expressed as:",
+    options: ["Lt = L0 + rt", "W0 = Wt·e^rt", "L0 = Lt + rt", "W1 = W0·e^rt"],
+    correct: 3,
+    explain: "Exponential growth ka formula hai <b>W1 = W0·e^rt</b>, jaha W1 = final size, W0 = initial size, r = growth rate, t = time. Pehla option (Lt=L0+rt) actually arithmetic growth ka formula hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Growth Curves",
+    text: "Select the correct statement w.r.t diagram A & B:\n(A = ek side badhta pyramid jaisa shape, B = symmetric bada triangle shape)",
+    options: [
+      "A is arithmetic growth and growth curve is linear",
+      "B is arithmetic growth and growth curve is linear",
+      "A is geometric growth and growth curve is sigmoid",
+      "B is geometric growth and growth curve is linear"
+    ],
+    correct: 0,
+    explain: "Diagram A me ek side hi cells add ho rahe hain (constant rate) — ye <b>arithmetic growth</b> hai jiska graph <b>linear (straight line)</b> hota hai. Diagram B (symmetric wala) geometric growth dikhata hai jiska curve sigmoid hota hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Growth Phases (Sigmoid Curve)",
+    text: "Given graph is drawn on parameters of growth vs time. Here A, B and C respectively represent (Sigmoid curve ka figure — shuru me slow B, phir tez C, phir flat A)",
+    options: [
+      "Exponential phase, log phase and steady state phase",
+      "Steady state phase, lag phase and log phase",
+      "Log phase, steady state phase and logarithmic phase",
+      "Log phase, lag phase and steady state phase"
+    ],
+    correct: 1,
+    explain: "Sigmoid curve me order hota hai: <b>Lag phase (shuru me slow) → Log phase (tezi se badhna) → Steady state (flat, growth ruk jaati hai)</b>. Diagram me A curve ke end me hai (steady state), B shuru me (lag), C beech me (log) — isliye 'Steady state phase, lag phase and log phase' sahi hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "AG vs RGR Calculation",
+    text: "Factors influencing growth of two leaves over one day. Leaf A: 5 cm² → 10 cm². Leaf B: 30 cm² → 55 cm². Agar AG = Absolute Growth aur RGR = Relative Growth Rate, to sahi option chuno:",
+    options: [
+      "AG(A)=1%, RGR(A)=1, AG(B)=2%, RGR(B)=2",
+      "AG(A)=100%, RGR(A)=5, AG(B)=10%, RGR(B)=5",
+      "AG(A)=5, RGR(A)=100%, AG(B)=5, RGR(B)=10%",
+      "AG(A)=5, RGR(A)=100%, AG(B)=5, RGR(B)=100%"
+    ],
+    correct: 2,
+    explain: "<b>Absolute Growth (AG)</b> = final size − initial size (ek fixed number, %tage nahi).\nLeaf A: AG = 10−5 = <b>5</b> | RGR = (5/5)×100 = <b>100%</b>\nLeaf B: AG = 55−30 = <b>5</b> hai wahi, lekin RGR = (5/30)×100 ≈ <b>10%</b> (kam, kyunki starting size zyada thi)\nIsliye chota leaf A same absolute growth ke bawajood zyada relative growth rate dikhata hai — ye concept hi is question ka core hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Differentiation",
+    text: "Cells of tracheary elements (tracheids and vessels) become dead at maturity and lose their protoplasm due to deposition of lignocellulosic cell wall thickenings. This is an example of:",
+    options: ["Growth", "Differentiation", "Dedifferentiation", "Redifferentiation"],
+    correct: 1,
+    explain: "Jab ek simple meristematic cell apna structure permanently badal ke ek specialized cell (jaise tracheid/vessel) banti hai — jisme protoplasm khatam ho jaata hai aur thick wall deposit hoti hai — ye process <b>Differentiation</b> kehlata hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Dedifferentiation (NEET 2023)",
+    text: "In tissue culture experiments, leaf mesophyll cells are put in a culture medium to form callus. This phenomenon may be called as: [NEET 2023]",
+    options: ["Dedifferentiation", "Development", "Senescence", "Differentiation"],
+    correct: 0,
+    explain: "Jab ek pehle se differentiated (mature) cell dobara divide hone ki capacity wapas paa leta hai (jaise mesophyll cell se callus banna), tab ye <b>Dedifferentiation</b> kehlata hai — differentiation ka ulta process."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Redifferentiation",
+    text: "Examples of tissues that are formed by redifferentiation are:",
+    options: ["Secondary xylem", "Secondary phloem", "Cork cell", "All of these"],
+    correct: 3,
+    explain: "Redifferentiation matlab dedifferentiated cells (jaise vascular cambium) dobara divide hoke naye specialized tissues banate hain — <b>Secondary xylem, Secondary phloem aur Cork cell</b> teeno hi redifferentiation ke examples hain."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Plasticity",
+    text: "Which of the following shows plasticity?",
+    options: ["Cotton", "Coriander", "Larkspur", "All"],
+    correct: 3,
+    explain: "Cotton, Coriander aur Larkspur — teeno hi heterophylly dikhate hain (juvenile leaf ≠ adult leaf), jo Plasticity ka classic example hai. Isliye <b>All</b> sahi hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Sequence of Events",
+    text: "Identify the correct sequence of the following events occurring in plants:\nI. Differentiation\nII. Maturation\nIII. Senescence\nIV. Plasmatic growth",
+    options: [
+      "I → II → III → IV",
+      "I → II → IV → III",
+      "IV → III → II → I",
+      "IV → I → II → III"
+    ],
+    correct: 3,
+    explain: "Sahi biological sequence hai: <b>Plasmatic growth (IV) → Differentiation (I) → Maturation (II) → Senescence (III)</b>. Pehle cell elongate/grow hoti hai, phir differentiate hoti hai, phir mature hoti hai, aakhir me senescence (buढ़ापa) aata hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Plasticity",
+    text: "Which phenomena is depicted?\n(Juvenile leaf, Adult leaf, aur Terrestrial habitat wali badi leaf — teeno alag shapes)",
+    options: ["Heterophylly", "Growth", "Plasticity", "More than one is correct"],
+    correct: 3,
+    explain: "Jaisa pehle discuss kiya tha — Heterophylly khud Plasticity ka hi example hai, isliye dono options sahi hain aur answer <b>'More than one is correct'</b> hai."
+  },
+  {
+    dpp: "DPP 2",
+    tag: "Assertion-Reason",
+    text: "Assertion (A): The difference in shapes of leaves produced in air and those produced in water in buttercup represent the heterophyllous development due to environment.\nReason (R): The phenomenon of heterophylly is an example of plasticity.",
+    options: [
+      "Both A and R are True, R is correct explanation of A",
+      "Both A and R are True, R is NOT correct explanation of A",
+      "A is True but R is False",
+      "Both A and R are False"
+    ],
+    correct: 1,
+    explain: "Dono statements individually sahi hain — buttercup me environment ki wajah se heterophylly hoti hai (A sahi), aur heterophylly plasticity ka example hai (R sahi). Lekin <b>R, A ki direct explanation nahi hai</b> — R sirf ek general definition de raha hai (heterophylly = plasticity ka example), jabki A specifically buttercup ke environment-based case ki baat kar raha hai. Isliye 'Both true but R is NOT correct explanation of A' sahi hai."
+  }
+];
+
+let score = 0;
+let answered = new Array(questions.length).fill(false);
+
+function renderQuiz(){
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  document.getElementById('totalDisplay').textContent = questions.length;
+
+  let lastDpp = null;
+
+  questions.forEach((q, qIndex) => {
+    if(q.dpp !== lastDpp){
+      const heading = document.createElement('div');
+      heading.className = 'section-heading';
+      heading.textContent = '📘 ' + q.dpp;
+      container.appendChild(heading);
+      lastDpp = q.dpp;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="qmeta">
+        <span class="qnum">Q${qIndex + 1}</span>
+        <span class="qtag">${q.tag}</span>
+      </div>
+      <div class="qtext">${q.text}</div>
+      <div class="options" id="options-${qIndex}"></div>
+      <div class="feedback" id="feedback-${qIndex}"></div>
+    `;
+    container.appendChild(card);
+
+    const optionsDiv = card.querySelector(`#options-${qIndex}`);
+    q.options.forEach((optText, optIndex) => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.textContent = optText;
+      btn.onclick = () => selectAnswer(qIndex, optIndex);
+      optionsDiv.appendChild(btn);
+    });
+  });
+}
+
+function selectAnswer(qIndex, optIndex){
+  if(answered[qIndex]) return;
+  answered[qIndex] = true;
+
+  const q = questions[qIndex];
+  const optionsDiv = document.getElementById(`options-${qIndex}`);
+  const buttons = optionsDiv.querySelectorAll('.option');
+  const feedback = document.getElementById(`feedback-${qIndex}`);
+
+  buttons.forEach((btn, i) => {
+    btn.classList.add('locked');
+    btn.onclick = null;
+    if(i === optIndex && i === q.correct){
+      btn.classList.add('correct-pick');
+    } else if(i === optIndex && i !== q.correct){
+      btn.classList.add('wrong-pick');
+    } else if(i === q.correct){
+      btn.classList.add('reveal-correct');
+    } else {
+      btn.classList.add('dim');
+    }
+  });
+
+  const isCorrect = optIndex === q.correct;
+  if(isCorrect) score++;
+
+  feedback.className = 'feedback show ' + (isCorrect ? 'right' : 'wrong');
+  feedback.innerHTML = `
+    <span class="status">${isCorrect ? '✅ सही जवाब!' : '❌ गलत जवाब'}</span>
+    <div class="explain">${q.explain}</div>
+  `;
+
+  document.getElementById('scoreDisplay').textContent = score;
+}
+
+function resetQuiz(){
+  score = 0;
+  answered = new Array(questions.length).fill(false);
+  document.getElementById('scoreDisplay').textContent = 0;
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+
+</body>
+</html>
